@@ -34,12 +34,12 @@
 
       <div class="form-group">
         <%= f_booking.label :booking_date %><br>
-        <%= f_booking.text_field :booking_date, :class => "form-control",:type => "date"%>
+        <%= f_booking.text_field :booking_date, :class => "form-control",:type => "date",:placeholder => "mm/dd/yyyy"%>
       </div>
 
       <div class="form-group">
         <%= f_booking.label :booking_time %><br>
-        <%= f_booking.text_field :booking_time, :class => "form-control",:type => "time"%>
+        <%= f_booking.text_field :booking_time, :class => "form-control",:type => "time", :placeholder => "00:00 - 23:59"%>
       </div>
 
       <% if params[:action] == "edit"%>
@@ -49,6 +49,6 @@
   </div>
 
   <div class="actions">
-    <%= f.submit "Submit" %>
+    <%= f.submit "Submit",:class => 'btn btn-default' %>
   </div>
 <% end %>
