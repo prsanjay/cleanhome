@@ -10,7 +10,6 @@
       </ul>
     </div>
   <% end %>
-
   <div class="form-group">
     <%= f.label :first_name %><br>
     <%= f.text_field :first_name,:class => "form-control" %>
@@ -26,7 +25,7 @@
 
   <h3>Booking Details</h3>
   <div class="form-group">
-    <%= f.fields_for :bookings, @customer.bookings do |f_booking| %>
+    <%= f.fields_for :bookings, @customer.bookings.last do |f_booking| %>
 
       <div class="form-group">
         <%= f_booking.label :city %><br>
@@ -42,10 +41,14 @@
         <%= f_booking.label :booking_time %><br>
         <%= f_booking.text_field :booking_time, :class => "form-control",:type => "time"%>
       </div>
+
+      <% if params[:action] == "edit"%>
+        <%= f_booking.hidden_field :cleaner_id, :value => f_booking.object.cleaner.id%>
+      <% end %>
     <% end %>
   </div>
 
   <div class="actions">
-    <%= f.submit %>
+    <%= f.submit "Submit" %>
   </div>
 <% end %>

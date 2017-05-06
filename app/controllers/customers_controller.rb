@@ -1,5 +1,6 @@
 class CustomersController < ApplicationController
   before_action :set_customer, only: [:show, :edit, :update, :destroy]
+  before_filter :authenticate_admin!, only: [:index,:destroy]
 
   # GET /customers
   # GET /customers.json
@@ -20,6 +21,7 @@ class CustomersController < ApplicationController
 
   # GET /customers/1/edit
   def edit
+
   end
 
   # POST /customers
@@ -27,24 +29,27 @@ class CustomersController < ApplicationController
   def create
     @customer = Customer.where('phone_number=?',customer_params[:phone_number]).first
     if @customer.present?
-      Booking.create_if_cleaners_available(customer_params[:bookings_attributes]["0"],@customer.id)
-    else
-      customer = Customer.create_booking_and_customer(customer_params)
-      @customer = customer[:customer]
-
-      if customer[:error].present?
-        @customer.errors.add(:base,'Cleaner Not Available')
+      booking = @customer.bookings.create(customer_params[:bookings_attributes]["0"])
+      respond_to do |format|
+        if !booking.errors.present?
+          format.html { redirect_to @customer, notice: 'Booking was successfully created.' }
+          format.json { render :show, status: :created, location: @customer }
+        else
+          @customer.errors.add(:base,'No Available Cleaner.')
+          format.html { render :new }
+          format.json { render json: booking.errors, status: :unprocessable_entity }
+        end
       end
-    end
-
-
-    respond_to do |format|
-      if !@customer.errors.present?
-        format.html { redirect_to @customer, notice: 'Customer was successfully created.' }
-        format.json { render :show, status: :created, location: @customer }
-      else
-        format.html { render :new }
-        format.json { render json: @customer.errors, status: :unprocessable_entity }
+    else # IF CUSTOMER NOT PRESENT
+      @customer = Customer.new(customer_params)
+      respond_to do |format|
+        if @customer.save
+          format.html { redirect_to @customer, notice: 'Booking was successfully created.' }
+          format.json { render :show, status: :created, location: @customer }
+        else
+          format.html { render :new }
+          format.json { render json: @customer.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
@@ -81,6 +86,6 @@ class CustomersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def customer_params
-      params.require(:customer).permit(:first_name, :last_name, :phone_number,:bookings_attributes => [:booking_date,:time,:city_id])
+      params.require(:customer).permit(:first_name, :last_name, :phone_number,:bookings_attributes => [:id,:booking_date,:booking_time,:city_id,:cleaner_id,:_destroy])
     end
 end

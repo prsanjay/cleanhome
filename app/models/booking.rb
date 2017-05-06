@@ -3,13 +3,21 @@ class Booking < ActiveRecord::Base
   belongs_to :cleaner
   belongs_to :city
 
-  def self.create_if_cleaners_available(booking_params,customer_id)
-    customer = Customer.find(customer_id)
-    cleaners = Cleaner.joins(:bookings,:city_cleaners).where('booking_date != ?',booking_params[:booking_date].to_date).where('bookings.booking_time != ?',booking_params[:booking_time]).where('city_cleaners.city_id IN (?)',booking_params[:city_id])
-    if cleaners.present?
-        booking = Booking.create(cleaner_id: cleaners.first.id,customer_id: customer_id,city_id: booking_params[:city_id],booking_date: booking_params[:booking_date],time: booking_params[:booking_time])
-    else
-      return false
-    end
+  validates :city_id,:booking_date,:booking_time, presence: true
+
+  validate :cleaner_availability
+
+  def cleaner_availability
+    taken_cleaners = Cleaner.joins("LEFT JOIN bookings on bookings.cleaner_id=cleaners.id",:city_cleaners).where('city_cleaners.city_id IN (?) AND booking_date=? AND booking_time=?',self.city_id,self.booking_date,self.booking_time).uniq
+
+      available_cleaners = Cleaner.all - taken_cleaners
+      if available_cleaners.present?
+          self.cleaner_id = available_cleaners.first.id
+      elsif Cleaner.all.blank?
+        errors.add('', ': No Cleaner Available')
+      else
+        self.cleaner_id = nil
+        errors.add('', ': No Cleaner Available')
+      end
   end
 end

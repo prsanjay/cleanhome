@@ -1,19 +1,63 @@
-<p id="notice"><%= notice %></p>
 
-<p>
-  <strong>First name:</strong>
-  <%= @customer.first_name %>
-</p>
+<div>
+  <h4>YOUR DETAILS</h4>
+  <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Last name:</strong>
-  <%= @customer.last_name %>
-</p>
+  <p>
+    <strong>First name:</strong>
+    <%= @customer.first_name %>
+  </p>
 
-<p>
-  <strong>Phone number:</strong>
-  <%= @customer.phone_number %>
-</p>
+  <p>
+    <strong>Last name:</strong>
+    <%= @customer.last_name %>
+  </p>
 
-<%= link_to 'Edit', edit_customer_path(@customer) %> |
-<%= link_to 'Back', customers_path %>
+  <p>
+    <strong>Phone number:</strong>
+    <%= @customer.phone_number %>
+  </p>
+  <hr>
+</div>
+
+<h4>RECENT CLEANER DETAILS</h4>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Clener Name</th>
+      <th>Quality Rating</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><%= @customer.bookings.last.cleaner.name rescue 'N/A'%></td>
+      <td><%= @customer.bookings.last.cleaner.quality_score rescue 'N/A'%></td>
+    </tr>
+  </tbody>
+</table>
+<hr>
+<h3>ALL BOOKINGS</h3>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Booking Date</th>
+      <th>Cleaner Name</th>
+      <th>Booking Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @customer.bookings.each_with_index do |booking,index| %>
+      <tr>
+        <th scope="row"><%= index+=1 %></th>
+        <td><%= booking.booking_date %></td>
+        <td><%= booking.cleaner.name rescue 'N/A' %></td>
+        <td><%= booking.booking_time %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'Edit', edit_customer_path(@customer) %>

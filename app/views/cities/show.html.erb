@@ -1,0 +1,12 @@
+<p id="notice"><%= notice %></p>
+
+<div>
+  <h4>CITY DETAILS</h4>
+  <p>
+    <strong>Name: </strong>
+    <%= @city.name %>
+  </p>
+</div>
+<hr>
+<%= link_to 'Edit', edit_city_path(@city) %> |
+<%= link_to 'Back', cities_path %>
