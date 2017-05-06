@@ -15,6 +15,7 @@ class CustomersController < ApplicationController
   # GET /customers/new
   def new
     @customer = Customer.new
+    @customer.bookings.new
   end
 
   # GET /customers/1/edit
@@ -24,10 +25,10 @@ class CustomersController < ApplicationController
   # POST /customers
   # POST /customers.json
   def create
-    @customer = Customer.new(customer_params)
+    @customer = Customer.create_booking_and_customer(customer_params)
 
     respond_to do |format|
-      if @customer.save
+      if !@customer.errors.present?
         format.html { redirect_to @customer, notice: 'Customer was successfully created.' }
         format.json { render :show, status: :created, location: @customer }
       else
@@ -69,6 +70,6 @@ class CustomersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def customer_params
-      params.require(:customer).permit(:first_name, :last_name, :phone_number)
+      params.require(:customer).permit(:first_name, :last_name, :phone_number,:bookings => [:date,:customer_id,:cleaner_id])
     end
 end

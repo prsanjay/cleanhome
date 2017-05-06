@@ -11,18 +11,29 @@
     </div>
   <% end %>
 
-  <div class="field">
+  <div class="form-group">
     <%= f.label :first_name %><br>
-    <%= f.text_field :first_name %>
+    <%= f.text_field :first_name,:class => "form-control" %>
   </div>
-  <div class="field">
+  <div class="form-group">
     <%= f.label :last_name %><br>
-    <%= f.text_field :last_name %>
+    <%= f.text_field :last_name,:class => "form-control" %>
   </div>
-  <div class="field">
+  <div class="form-group">
     <%= f.label :phone_number %><br>
-    <%= f.text_field :phone_number %>
+    <%= f.text_field :phone_number,:class => "form-control"%>
   </div>
+
+  <h3>Booking Details</h3>
+  <div class="form-group">
+    <%= f.fields_for :bookings, @customer.bookings do |f_booking| %>
+      <div class="form-group">
+        <%= f_booking.label :date %><br>
+        <%= f_booking.text_field :date, :class => "form-control",:type => "date"%>
+      </div>
+    <% end %>
+  </div>
+
   <div class="actions">
     <%= f.submit %>
   </div>

@@ -11,18 +11,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160119233218) do
+ActiveRecord::Schema.define(version: 20170506053121) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "bookings", force: :cascade do |t|
     t.integer  "customer_id"
     t.integer  "cleaner_id"
     t.date     "date"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.integer  "city_id"
+    t.string   "booking_time"
   end
 
-  add_index "bookings", ["cleaner_id"], name: "index_bookings_on_cleaner_id"
-  add_index "bookings", ["customer_id"], name: "index_bookings_on_customer_id"
+  add_index "bookings", ["city_id"], name: "index_bookings_on_city_id", using: :btree
+  add_index "bookings", ["cleaner_id"], name: "index_bookings_on_cleaner_id", using: :btree
+  add_index "bookings", ["customer_id"], name: "index_bookings_on_customer_id", using: :btree
+
+  create_table "cities", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "cleaners", force: :cascade do |t|
     t.string   "first_name"
@@ -40,4 +52,6 @@ ActiveRecord::Schema.define(version: 20160119233218) do
     t.datetime "updated_at",   null: false
   end
 
+  add_foreign_key "bookings", "cleaners"
+  add_foreign_key "bookings", "customers"
 end
