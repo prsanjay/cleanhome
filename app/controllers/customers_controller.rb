@@ -25,7 +25,18 @@ class CustomersController < ApplicationController
   # POST /customers
   # POST /customers.json
   def create
-    @customer = Customer.create_booking_and_customer(customer_params)
+    @customer = Customer.where('phone_number=?',customer_params[:phone_number]).first
+    if @customer.present?
+      Booking.create_if_cleaners_available(customer_params[:bookings_attributes]["0"],@customer.id)
+    else
+      customer = Customer.create_booking_and_customer(customer_params)
+      @customer = customer[:customer]
+
+      if customer[:error].present?
+        @customer.errors.add(:base,'Cleaner Not Available')
+      end
+    end
+
 
     respond_to do |format|
       if !@customer.errors.present?
@@ -70,6 +81,6 @@ class CustomersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def customer_params
-      params.require(:customer).permit(:first_name, :last_name, :phone_number,:bookings => [:date,:customer_id,:cleaner_id])
+      params.require(:customer).permit(:first_name, :last_name, :phone_number,:bookings_attributes => [:booking_date,:time,:city_id])
     end
 end

@@ -2,9 +2,6 @@ class Customer < ActiveRecord::Base
 
   has_many :bookings
 
-  after_create :create_booking
-  before_create :check_customer_present
-
   accepts_nested_attributes_for :bookings
 
   def self.create_booking_and_customer(customer_params)
@@ -13,7 +10,13 @@ class Customer < ActiveRecord::Base
       customer.last_name = customer_params[:last_name]
       customer.phone_number = customer_params[:phone_number]
       customer.save!
+      @customer = customer
     end
-    booking = Booking.create_if_cleaners_available(customer_params[:bookings],customer.id)
+    booking = Booking.create_if_cleaners_available(customer_params[:bookings_attributes]["0"],@customer.id)
+    if booking == false
+      return {:error => "Booking Not Available", :customer => @customer}
+    else
+      return {:error => nil, :customer => @customer}
+    end
   end
 end
