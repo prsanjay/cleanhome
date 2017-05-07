@@ -20,6 +20,7 @@ class CleanersController < ApplicationController
 
   # GET /cleaners/1/edit
   def edit
+    @city_ids = @cleaner.cities.pluck(:id)
   end
 
   # POST /cleaners

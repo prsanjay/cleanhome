@@ -1,8 +1,7 @@
 module CleanersHelper
-  def checked(city_id,cleaner_id)
-    cleaner = CityCleaner.where('city_id=? AND cleaner_id=?',city_id,cleaner_id)
-    if cleaner.present?
-      return true
+  def checked(city_ids,city_id)
+    if city_ids.present?
+      return city_ids.include?(city_id)
     else
       return false
     end

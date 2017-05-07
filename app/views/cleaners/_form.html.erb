@@ -18,7 +18,7 @@
     <%= f.label :city %><br>
     <% City.all.each do |city| %>
       <label class="checkbox-inline">
-        <%= check_box_tag 'city_ids[]', city.id, checked(city.id,@cleaner.id), :id => city.id%>
+        <%= check_box_tag 'city_ids[]', city.id, checked(@city_ids,city.id), :id => city.id%>
         <%= h city.name %>
       </label>
     <% end %>
