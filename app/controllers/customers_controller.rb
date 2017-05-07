@@ -31,13 +31,13 @@ class CustomersController < ApplicationController
     if @customer.present?
       booking = @customer.bookings.create(customer_params[:bookings_attributes]["0"])
       respond_to do |format|
-        unless booking.errors.present?
-          format.html { redirect_to @customer, notice: 'Booking was successfully created.' }
-          format.json { render :show, status: :created, location: @customer }
-        else
+        if booking.errors.present?
           @customer.errors.add(:base,'No Available Cleaner.')
           format.html { render :new }
           format.json { render json: booking.errors, status: :unprocessable_entity }
+        else
+          format.html { redirect_to @customer, notice: 'Booking was successfully created.' }
+          format.json { render :show, status: :created, location: @customer }
         end
       end
     else # IF CUSTOMER NOT PRESENT

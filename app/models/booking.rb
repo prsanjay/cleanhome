@@ -8,9 +8,8 @@ class Booking < ActiveRecord::Base
   validate :cleaner_availability
 
   def cleaner_availability
-    taken_cleaners = Cleaner.joins("LEFT JOIN bookings on bookings.cleaner_id=cleaners.id",:city_cleaners).where('city_cleaners.city_id IN (?) AND booking_date=? AND booking_time=?',self.city_id,self.booking_date,self.booking_time).uniq
+    available_cleaners = Cleaner.joins('LEFT JOIN bookings on bookings.cleaner_id=cleaners.id',:city_cleaners).where('booking_date != ? OR booking_date IS NULL',self.booking_date).where('booking_time != ? OR booking_time IS NULL',self.booking_time).where('city_cleaners.city_id=?',self.city_id).uniq
 
-      available_cleaners = Cleaner.all - taken_cleaners
       if available_cleaners.present?
           self.cleaner_id = available_cleaners.first.id
       else
