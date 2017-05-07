@@ -34,7 +34,7 @@
     <tbody>
       <% @cleaner.bookings.each_with_index do |booking,index| %>
         <tr>
-          <td><%= index = index +1 %></td>
+          <td><%= index+=1 %></td>
           <td><%= booking.booking_date %></td>
           <td><%= booking.booking_time %></td>
           <td><%= booking.customer.name %></td>

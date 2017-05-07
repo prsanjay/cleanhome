@@ -31,7 +31,7 @@ class CustomersController < ApplicationController
     if @customer.present?
       booking = @customer.bookings.create(customer_params[:bookings_attributes]["0"])
       respond_to do |format|
-        if !booking.errors.present?
+        unless booking.errors.present?
           format.html { redirect_to @customer, notice: 'Booking was successfully created.' }
           format.json { render :show, status: :created, location: @customer }
         else

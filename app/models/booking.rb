@@ -13,10 +13,7 @@ class Booking < ActiveRecord::Base
       available_cleaners = Cleaner.all - taken_cleaners
       if available_cleaners.present?
           self.cleaner_id = available_cleaners.first.id
-      elsif Cleaner.all.blank?
-        errors.add('', ': No Cleaner Available')
       else
-        self.cleaner_id = nil
         errors.add('', ': No Cleaner Available')
       end
   end
