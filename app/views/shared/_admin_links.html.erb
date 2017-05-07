@@ -1,10 +1,18 @@
 <% if admin_signed_in? %>
-  <%= link_to('Logout', destroy_admin_session_path, :method => :delete) %>
-  <ul>
-    <li><%= link_to 'Cleaners', cleaners_path %></li>
-    <li><%= link_to 'Customers', customers_path %></li>
-    <li><%= link_to 'Cities', cities_path %></li>
-  </ul>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <%= link_to('Logout', destroy_admin_session_path, :method => :delete,:class => "navbar-brand") %>
+      </div>
+      <ul class="nav navbar-nav">
+        <li class=<%= "active" if params[:controller] == "cleaners" %>><%= link_to 'Cleaners', cleaners_path %></li>
+        <li class=<%= "active" if params[:controller] == "customers" %>><%= link_to 'Customers', customers_path %></li>
+        <li class=<%= "active" if params[:controller] == "cities" %>><%= link_to 'Cities', cities_path %></li>
+      </ul>
+    </div>
+  </nav>
 <% elsif params[:controller] == 'admins' %>
-  <%= link_to('Login', new_admin_session_path)  %>
+  <div class="navbar-header">
+    <%= link_to('Login', new_admin_session_path,:class => "navbar-brand")  %>
+  </div>
 <% end %>
